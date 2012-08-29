@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+   	  <link rel="stylesheet" type="text/css" href="lazarus.css">
+      <TITLE>Lazarus: a software tool for reconstructing ancestral protein sequences</TITLE>
+   </HEAD>
+<BODY>
+
+<p><a href='http://www.uoregon.edu/~joet/'><small>Thornton Lab</small></a> | <a href='http://evolution.uoregon.edu/'><small>CEEB</small></a> | <a href='http://uoregon.edu/'><small>University of Oregon</small></a> | <a href="http://www.victorhansonsmith.com"><small>Victor Hanson-Smith</small></a></p>
+<h1>Lazarus</h1>
+<p>A software tool for reconstructing ancestral molecular sequences.</p>
+<hr>
+<p><a href="index.html">Lazarus Home</a> | <a href="installation.html">Download and Install</a> | <a href="examples.html">Examples</a> </p>
+
+<hr>
+<h2>Overview</h2>
+<p>Lazarus is a collection of scripts for running <strong>codeml</strong> and <strong>baseml</strong> in the <a href="http://abacus.gene.ucl.ac.uk/software/paml.html">PAML software suite</a>.  Lazarus allows you to run PAML for large distributions of phylogenies, and then integrate over those trees to calculate the <em>maximum a posteriori</em> ancestral sequence.  Even if you're dealing with just one tree, Lazarus is still useful: it provides an easy way to compose and launch PAML jobs.  Lazarus provides an easy-to-use terminal interface that mimics the program <a href="http://atgc.lirmm.fr/phyml/">PhyML</a>; if you're comfortable using PhyML, then using Lazarus should be straightforward.</p>
+
+<p>Given a sequence alignment, a phylogeny, and an evolutionary model, Lazarus uses PAML to calculate the marginal distribution of ancestral states at all internal nodes.  After PAML is finished, Lazarus reformats PAML's output into a collection of text files: the maximum likelihood phylogeny and each ancestral state distribution are extracted into separate files.  For programmers, Lazarus provides a rich collection of Python class objects; Lazarus is easy to embed within your larger software pipeline.  Here is some relevant peer-reviewed literature:</p>
+
+<p>Maximum Likelihood Ancestral Sequence Reconstruction:<br>
+<a href="http://www.genetics.org/cgi/content/abstract/141/4/1641">Yang et al., Genetics 1995</a>
+</p>
+
+<p>Marginal reconstruction:<br>
+<a href="http://www.springerlink.com/content/f20551n708g4627q/">Koshi and Goldstein, Journal of Molecular Evolution 1996</a>
+</p>
+
+<p>PAML, version 4:<br>
+<a href="http://mbe.oxfordjournals.org/cgi/content/abstract/24/8/1586">Yang, Molecular Biology and Evolution, 2007</a>
+</p>
+
+<p>I hope you find Lazarus useful, but be aware that I do not have a large team of software developers.  I am providing this software as a resource to the research community, but without the promise of support. If you have questions, email Victor Hanson-Smith (victorhs at cs dot uoregon dot edu), and I'll try to help you as thoroughly as possible.</p>
+
+<p></p>
+
+<h2>Using Lazarus in the Thornton Lab</h2>
+
+<p>Lazaurus is already installed on phylo.uoregon.edu.  You can run Lazarus from anywhere on the command-line by typing '<font class="code">lazarus</font>.'</p>
+
+<h2>File Formats</h2>
+
+<p>Lazarus reads alignments in FASTA format and trees in Newick format.  Programs such as <a href="http://www.geneious.com/">Geneious</a> and <a href="http://macclade.org/macclade.html">MacClade</a> will help you convert your data, or you can use one of these converters.</p>
+
+<ul>
+<li><a href="http://www.bugaco.com/bioinf/nexusfasta.php">Nexus to FASTA</a></li>
+<li><a href="http://phylo.uoregon.edu/~victor/phylowidgets/treprobsToNewick.html">Mr. Bayes *.trprobs to Newick</a></li>
+</ul>
+<hr>
+
+<h2></h2>
+
+</BODY>
+</HTML>

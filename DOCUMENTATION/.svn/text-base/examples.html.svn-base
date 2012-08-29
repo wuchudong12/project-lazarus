@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+   	  <link rel="stylesheet" type="text/css" href="lazarus.css">
+      <TITLE>Lazarus: a software tool for reconstructing ancestral protein sequences</TITLE>
+   </HEAD>
+<BODY>
+<p><a href='http://www.uoregon.edu/~joet/'><small>Thornton Lab</small></a> | <a href='http://evolution.uoregon.edu/'><small>CEEB</small></a> | <a href='http://uoregon.edu/'><small>University of Oregon</small></a> | <a href="http://www.victorhansonsmith.com"><small>Victor Hanson-Smith</small></a></p>
+<h1>Lazarus</h1>
+<p>A software tool for reconstructing ancestral molecular sequences.</p>
+<hr>
+<p><a href="index.html">Lazarus Home</a> | <a href="installation.html">Download and Install</a> | <a href="examples.html">Examples</a> </p>
+<hr>
+
+<p>Here are some examples demonstrating how to use Lazarus.  These examples use data for steroid-hormone receptors from <a href="http://www.sciencemag.org/cgi/content/abstract/312/5770/97">Bridgham et al., 2006, Science v312.</a></p>
+
+
+<h2>Example 1: a basic example</h2>
+
+<p>Let's reconstruct the ancestral sequence for the most-recent-common ancestor of the mineralocorticoid (MR) and glucocorticoid (GR) receptors.</p>
+
+<p>To start, download these files:</p>
+
+<div class="divBlue">
+<h4>Files used in these examples</h4>
+<ul>
+<li><a href="example_data/apgm83.fasta">apgm83.fasta</a></li>
+<li><a href="example_data/apgm83.newick">apgm83.newick</a></li>
+</ul>
+</div>  
+
+<p>These files include an alignment of protein sequences named <strong>apgm83.fasta</strong>, and a tree file named <strong>apgm83.newick</strong>.  The alignment is a standard FASTA file.  The tree file contains a distribution of three putative trees, with one tree per line.  However, a robust analysis could contain hundreds or thousands of trees.  Lazarus will instruct PAML to re-estimate the maximum likelihood branch lengths on each tree, and then weight the resultant ancestral reconstructions from each tree by associated the posterior probability of the tree.</p>
+
+<p>Navigate to the folder where you saved the alignment and the tree file.  In this example, I saved the alignment and the tree file to a folder named <strong>/Users/victor/apgm</strong>.  On your machine, this will certainly be a different location.</p>
+
+<p>To start the analysis, open a terminal and start Lazarus.  You should see an interface which looks similar to the screenshot below.  (If you followed the official installation instructions, you can start Lazarus by typing <strong>lazarus</strong> from the command-line.)</p>
+
+<div align="center">
+<img src="example_data/1.jpg" border=2>
+</div>
+
+<p>Use the terminal interface to configure Lazarus:</p>
+<ol>
+<li>Use the <strong>D</strong> option to select amino acids.</li>  
+<li>Use the <strong>A</strong> option, and then type "apgm83.fasta"; Lazarus should automatically detect 60 taxa in the alignment file.</li>
+<li>Use the <strong>T</strong> option and then type "apgm83.newick"; Lazarus should automatically identify the three trees.</li>
+<li>Use the <strong>M</strong> option to select the "JTT" model of evolution; the <a href="http://bioinformatics.oxfordjournals.org/cgi/content/abstract/8/3/275">JTT substitution matrix</a> is best-fitting model for this data according to the Akaike Information Criterion in <a href="http://darwin.uvigo.es/software/prottest.html">ProtTest</a>.</li>
+<li>Use the <strong>B</strong> option to find the ML estimate of branch lengths.</li>
+<li>Use the <strong>V</strong> option to select "4 gamma-distributed categories."</li>
+<li>By default, Lazarus will output results to our current location, so we can leave the <strong>O</strong> option alone.</li>
+<li>Use the <strong>I</strong> option to parsimoniously place indel characters after PAML is finished.  PAML is not indel-aware, and will erroniously infer ancestral states when the descendant state is "-".  The <strong>I</strong> option in Lazarus attempts to overcome the indel limitation.
+<li>Use the <strong>U</strong> option to select outgroup taxa.  Type the taxa names as a comma-seperated list.  In this example, we'll use lampreySR1 and hagSR1 as the outgroup.  After selecting <strong>U</strong>, type "lampreySR1, hagSR1".  NOTE: The likelihood caluclation in PAML operates on an unrooted tree.  Lazarus uses rooting information for the placement of gaps, and for the later display of your phylogeny.</li>
+</ol>
+<p>After you configure Lazarus, you should see something like the screenshot below.</p>
+
+<div align="center">
+<img src="example_data/2.jpg" border=2>
+</div>
+
+<p>Start the analysis.  Type "Y" and press enter.  You should see verbose output from PAML scroll across the screen.  Depending on your processor speed, this step could take a few minutes.  When PAML is finished, Lazarus will parse the results.  At the end, you should see output which looks like this:</p>
+
+<div align="center">
+<img src="example_data/3.jpg" border=2>
+</div>
+
+<p>If you do not see the line "Lazarus is done. KTHXBYE.", then something wrong happened.  In this case, scroll-up and look for an appropriate error message.</p>
+
+<h4>Output Files</h4>
+
+<p>Assuming Lazarus finished without error, you will find a collection of files in the output directory.  In this example, the output directory is <strong>/Users/victor/apgm</strong>; on your machine it will certainly be something else.  Within the output directory, you will find the following files and folders:</p>
+
+<ul>
+<li><strong>tree_summary.txt</strong>: a list of each tree (numbered according to their order of appearance in your tree file), the log likelihood of each tree, and the Bayesian posterior probability of each tree.</li>
+<li><strong>lazarus_job_status.log</strong>: a summary of the Lazarus session.</li>
+<li><strong>lazarus_workspace.save</strong>: a serialized Python object.  If you're not a programmer, you can probably ignore this file.  See example 3 (below) to learn more about this file.</li>
+<li><strong>treeX</strong>: a folder, where X is the number of a tree in your dataset.  Lazarus creates a folder for each tree in your tree file.  We have three trees in our example; therefore, you should find folders named <strong>tree1</strong>, <strong>tree2</strong>, and <strong>tree3</strong>.  Within each tree folder, you will find more files:
+
+<ul>
+<li><strong>treeX.txt</strong>: This file contains two versions of the tree.  At the top of the file, you'll find the tree with branch lengths.  At the bottom of the file, you'll find the tree as a cladogram (without branch lengths), but with labels for internal node numbers. </li>
+<li><strong>nodeY.dat</strong>: the distribution of ancestral states on node Y, where Y is a number.  In this example we have internal nodes numbered 61 through 118.  Within these files, each line contains the site number and the distribution of states at that site.  For example, on tree 1 at node 100, we find the line "5  A 0.990 S 0.010".  This means that site 5 on node100 is state "A" with posterior probability 990 or "S" with posterior probability 0.010.</li>
+<li><strong>nodeY.seq.txt</strong>: the maximum likelihood sequence for node Y.  Unlike the file named nodeY.dat, nodeY.seq.txt shows just the ML sequence and not the entire state distribution.</li>
+<li><strong>pamlWorkspace</strong>: a directory containing the raw output from PAML, including the control file (baseml.ctl or codeml.ctl) used to invoke PAML.  In general, you probably don't need to look at these files.</li>
+</ul>
+
+</li>
+</ul>
+
+<h4>Retrieving the maximum likelihood ancestral state distribution</h4>
+
+<p>Suppose we want the most-recent-common ancestor of the mineralocorticoid (MR) and glucocorticoid (GR) receptors.  This corresponds to the "AncCR" in <a href="http://www.sciencemag.org/cgi/content/abstract/312/5770/97">Bridgham et al., 2006, Science v312.</a></p>
+
+<p>In the file named <strong>tree_summary.txt</strong>, we see that tree #1 is the ML tree with 0.995 posterior probability.  In the file named <strong>tree1/tree.txt</strong>, we see that the most-common-shared ancestor of the MR and GR clades is node #69.  Therefore, we find the distribution of ancestral states for node #69 in the file named <strong>tree1/node69.dat</strong>.</p>
+
+<h4>Retrieving the maximum a posteriori ancestral state distribution</h4>
+
+<p>In this example, there exists a small amount of uncertainty about the ML tree.  To incorporate this uncertainty into the reconstruction of the MR/GR ancestor, use the following command:</p>
+
+<div class="divBlue">
+<p class="code">
+lazarus_batch --getanc --outgroup [lampreySR1,hagSR1] --ancnode 69
+</p>
+</div>
+
+<p>The above command will use the specified outgroup to root the tree, and the specified node number to identify a set 'S' of descendant taxa.  'S' is defined to be descendants of the specified node number on the ML tree.  Using this definition of 'S', Lazarus will find the analogous last-common ancestor on every tree in the distribution of trees.  Lazarus will integrate these analagous ancestral distributions, weighing each by the posterior probability of its associated tree.</p>
+
+<h2>Example 2: using Lazarus in batch mode</h2>
+
+<p>In the previous example, we analyzed steroid-hormone data using the easy interface.  In this example, we analyze the same data, but we use Lazarus in batch mode.  This example is useful if you intend to embed Lazarus within your software pipeline.  If you're not a programmer, you can probably skip this example.</p>
+<p>If you haven't already done so, download the files <strong>apgm83.fasta</strong> and <strong>apgm83.newick</strong>.  Navigate to the folder where you saved these files.</p>
+<p>When we run Lazarus in batch mode, we need to explicitly say where the evolutionary model is located.  In most cases, evolutionary models are located in a folder named <strong>dat</strong> within PAML's folder hierarchy.  On my machine, this folder is named <strong>/common/share/paml4/dat</strong>.  On your machine, this might be a different folder.</p>
+
+<p>Whereas in the previous example we uses the easy interface to setup our analysis, in this example we will use a series of command-line parameters.  The following (long) command will start our analysis:</p>
+
+<div class="divGreen">
+<h4>Sample command to run Lazarus:</h4>
+<p class="code">$> lazarus_batch --codeml --outputdir /Users/victor/apgm --verbose 9 --alignment /Users/victor/apgm/apgm83.fasta --tree /Users/victor/apgm/apgm83.trees.newick --model /common/share/paml4/dat/jones.dat --branch_lengths estimate --asrv 4</p>
+</div>
+
+<p>The output from this command will look identical to the output from the previous example.</p>
+
+<h2>Example 3: deserializing your Lazarus workspace in Python (for advanced users!)</h2>
+
+<p>If you're planning to embed Lazarus within a larger software pipeline, then chances are you'll need to parse the text output from Lazarus and build data structures in your code.  However, instead of writing your own parsers, you can save yourself much time by using the serialized Python object in the file named <strong>lazarus_workspace.save</strong>.  This file contians a serialized version of an "Engine" class (defined in the Lazarus code as "engine.py").  The engine object contains the distribution of ancestral state assignments on every node for every tree, the likelihood of each tree, and a rich collection of methods to dispatch jobs to PAML and analyze your data.  Here are the steps necessary to deserialize the engine object into your Python code:</p>
+
+<p>1. Make sure your Python system path contains the path to the Lazarus source code.  For example, if the Lazarus source code resides at "/common/share/lazarus", then you can manually add this location to your Python path as follows:</p>
+
+<div class="divGreen">
+<p class="code">>>>import sys</p>
+<p class="code">>>>sys.path.append("/common/share/lazarus")</p>
+</div>
+
+<p>2. Import the Lazarus class definitions.  Before we can deserialize your workspace, Python must know how the objects are defined.</p>
+
+<div class="divGreen">
+<p class="code">>>>from includeMe import *</p>
+</div>
+
+<p>3. Deserialize your workspace.  Invoke the following method to load your engine.</p>
+
+<div class="divGreen">
+<p class="code">
+# Here is how to load the pickled object. . .<br>
+def loadEngine(path):<br>
+&nbsp;&nbsp;&nbsp;print "--> Loading your Lazarus workspace. . ."<br>
+&nbsp;&nbsp;&nbsp;if os.path.exists( path ) == False:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print "\nI cannot find any saved workspaces."<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;print "I'm expecting to find a file named " + path + "\n"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;exit(1)<br>
+&nbsp;&nbsp;&nbsp;if = open(path, "r")<br>
+&nbsp;&nbsp;&nbsp;x = pickle.load(f)<br>
+&nbsp;&nbsp;&nbsp;print ". . .this workspace contains "<br>
+&nbsp;&nbsp;&nbsp;print x.data.trees.__len__().__str__() + " trees."<br>
+&nbsp;&nbsp;&nbsp;return x
+</p>
+</div>
+
+<p>4. Happy coding!</p>
+
+<hr>
+
+</BODY>
+</HTML>

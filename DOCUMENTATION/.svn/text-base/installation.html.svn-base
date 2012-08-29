@@ -1,0 +1,127 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+   	  <link rel="stylesheet" type="text/css" href="lazarus.css">
+      <TITLE>Lazarus: a software tool for reconstructing ancestral protein sequences</TITLE>
+   </HEAD>
+<BODY>
+<p><a href='http://www.uoregon.edu/~joet/'><small>Thornton Lab</small></a> | <a href='http://evolution.uoregon.edu/'><small>CEEB</small></a> | <a href='http://uoregon.edu/'><small>University of Oregon</small></a> | <a href="http://www.victorhansonsmith.com"><small>Victor Hanson-Smith</small></a></p>
+<h1>Lazarus</h1>
+<p>A software tool for reconstructing ancestral molecular sequences.</p>
+<hr>
+<p><a href="index.html">Lazarus Home</a> | <a href="installation.html">Download and Install</a> | <a href="examples.html">Examples</a> </p>
+<hr>
+
+<h2>Installation</h2>
+
+<p>Lazarus is a collection of Python scripts.  To get Lazarus working on your machine, follow the steps below.  If you're completely unfamiliar with Python, it will be useful to find a saavy friend to help you.  The steps to install Lazarus:</p>
+
+<ol>
+<li>Download Lazarus</li>
+<li>Install PAML</li>
+<li>Install PyCogent</li>
+<li>Add system short-cuts</li>
+<li>Test the installation</li>
+</ol>
+
+
+<h4>1. Download Lazarus</h4>
+
+<p>Download and unzip the file below.  Put the contents somewhere accessible on your machine.  For example, a good place on Unix is "/common/share/lazarus".</p>
+
+<div class="divBlue">
+<p> <a href="lazarus.11.09.2009.zip">Lazarus Code as of November 9, 2009</a></p>
+</div>
+
+<h4>2. Install PAML</h4>
+<p>Lazarus requires codeml and (optionally) baseml; these applications are part of the PAML software suite.  If PAML is not already installed on your machine, you can download it from the <a href="http://abacus.gene.ucl.ac.uk/software/paml.html">official PAML webpage.</a></p>
+
+<p>After you install PAML, ensure that the executables named "codeml" and "baseml" can be executed from anywhere on your machine.  I recommend adding soft links within a common location, such as "/usr/bin/codeml" and "/usr/bin/baseml".  If you see errors like this (below), then 'codeml' or 'baseml' are not accessible from your system-wide $PATH.</p>
+
+<div class="divBlue">
+<p class="code">
+$>baseml<br>
+-bash: baseml: command not found
+</div>
+
+
+<h4>3. Install PyCogent</h4>
+<p>Lazarus relies on PyCogent to parse alignment files and phylogenetic trees.  You can <a href="http://sourceforge.net/projects/pycogent">download PyCogent from SourceForge</a>.  For more information about PyCogent, see <a href="http://genomebiology.com/2007/8/8/R171">Knight et al., Genome Biology 2007</a></p>
+
+<p>Please be aware the PyCogent requires the NumPy package, which might need to be installed seperatly.</p>
+
+<p>After you install PyCogent, ensure that the Python package named "cogent" is accessible from the Python path.  To test, use the interactive Python shell:</p>
+
+<div class="divBlue">
+<p class="code">
+$>python<br>
+Python 2.5.2 (r252:60911, Feb 22 2008, 07:57:53)<br> 
+>>> from cogent import *</p>
+</div>
+
+<p>If PyCogent is not accessible from the Python path, you will see the following error:</p>
+
+<div class="divBlue">
+<p class="code">
+Traceback (most recent call last):<br>
+  File "<stdin>", line 1, in <module><br>
+ImportError: No module named cogent<br>
+
+</p>
+</div>
+
+<p>If PyCogent IS accessible from the Python path, then you'll see nothing at all:</p>
+
+<div class="divBlue">
+<p class="code">
+$>python<br>
+Python 2.5.2 (r252:60911, Feb 22 2008, 07:57:53)<br> 
+>>> from cogent import *<br>
+>>> </p>
+</div>
+
+<h4>4. Add system shortcuts</h4>
+
+<p>Strictly speaking, this step is not necessary.  However, it will save your fingers a lot of typing in the future.  Here, I show how to add system shortcuts for the case where Lazarus is installed at "/common/share/lazarus".  If you installed Lazarus elsewhere, then you'll need to adapt this example for your own machine.</p>
+
+<p>In the following example, I create the system-wide names 'lazarus' to invoke Lazarus' terminal GUI, and 'lazarus_batch' to invoke the command-line batch version of Lazarus.</p>
+
+<div class="divBlue">
+<p class="code">
+$> sudo ln -s /common/share/lazarus.py /usr/bin/lazarus_batch<br>
+$> sudo ln -s /common/share/lazarus_runpaml.py /usr/bin/lazarus<br>
+</p>
+</div>
+
+<p>Also, ensure that the Lazarus scripts are world-executable.</p>
+
+<div class="divBlue">
+<p class="code">
+$> sudo chmod a+x /common/share/lazarus.py<br>
+$> sudo chmod a+x /common/share/lazarus_runpaml.py<br>
+</p>
+</div>
+
+<h4>5. Test the installation</h4>
+
+<div class="divBlue">
+<p class="code">
+$> python /common/share/lazarus_unittest.py<br>
+</p>
+</div>
+
+<p>If all the tests passed, you should see output which looks something like this:</p>
+
+<div align="center">
+<img src="example_data/4.jpg" border=2>
+</div>
+
+<p>If the tests fail, review the output for clues about the cause of the error.  The most common errors occur because PyCogent is not correctly installed.</p>
+
+<h4>6. That's it.  Enjoy Lazarus.</h4>
+
+<hr>
+
+</BODY>
+</HTML>

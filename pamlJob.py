@@ -20,6 +20,7 @@ class PamlJob:
         self.controlPath = None
         self.estimate_branch_lengths = False
         self.among_site_rate_variation = False
+        self.fix_asrv = False
         self.alpha = 0.0
         self.ncat_gamma = 4
         self.cleandata = 0
@@ -89,15 +90,15 @@ class CodemlJob(PamlJob):
         f.write("seqtype = 2\n")
         f.write("aaRatefile = model.dat\n")
         f.write("model = 3\n")
-        if self.among_site_rate_variation == False:
-            f.write("fix_alpha = 1\n")
-            f.write("alpha = 0\n")    
-        else:
+        if self.fix_asrv == False:
             f.write("fix_alpha = 0\n")
-            f.write("ncatG = 4\n")
-        if self.alpha != 0.0:
-            f.write("fix_alpha = 1\n")
+        else:
+            f.write("fix_alpha = 1\n")            
+        if self.among_site_rate_variation:
             f.write("alpha = " + self.alpha.__str__() + "\n")
+            f.write("ncatG = 4\n")
+        else:
+            f.write("alpha = 0\n")
         f.write("RateAncestor = 2\n")
         f.write("Small_Diff = 1.0e-6\n")
         f.write("cleandata = " + self.cleandata.__str__() + "\n") # remove sites with "X" or "?" or other ambiguity
@@ -178,15 +179,15 @@ class BasemlJob(PamlJob):
         f.write("runmode = 0\n")
         modelnumber = self.get_number_for_model(self.modelName)
         f.write("model = " + modelnumber.__str__() + "\n")
-        if self.among_site_rate_variation == False:
-            f.write("fix_alpha = 1\n")
-            f.write("alpha = 0\n")    
-        else:
+        if self.fix_asrv == False:
             f.write("fix_alpha = 0\n")
-            f.write("ncatG = 4\n")
-        if self.alpha != 0.0:
-            f.write("fix_alpha = 1\n")
+        else:
+            f.write("fix_alpha = 1\n")            
+        if self.among_site_rate_variation:
             f.write("alpha = " + self.alpha.__str__() + "\n")
+            f.write("ncatG = 4\n")
+        else:
+            f.write("alpha = 0\n")
         f.write("RateAncestor = 2\n")
         f.write("Small_Diff = 1.0e-6\n")
         f.write("cleandata = " + self.cleandata.__str__() + "\n") # remove sites with "X" or "?" or other ambiguity

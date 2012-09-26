@@ -22,6 +22,8 @@
 # Optional command-line arguments:
 # --branch_lengths <value> // where value = 'estimate' or 'fixed'
 # --asrv <value> // where value = the number of gamma categories, or '0' for no among site rate variation]
+# --alpha <value> // the alpha value for the gamma model
+# --fix_asrv <True/False> // if True, then use the fixed alpha value.  If False, then find the Ml estimate of the value.
 # --codeml // to run amino acid analysis
 # --baseml // to run nucleotide analysis
 # --verbose

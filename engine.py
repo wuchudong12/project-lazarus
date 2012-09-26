@@ -217,6 +217,8 @@ class Engine:
         if self.argParser.doesContainArg("--cleandata"):
             x = self.argParser.getArg("--cleandata")
             self.pamljobs[treenumber].cleandata = int(x)
+        if self.argParser.doesContainArg("--fix_asrv"):
+            self.pamljobs[treenumber].fix_asrv = True
         if self.argParser.doesContainArg("--alpha"):
             x = self.argParser.getArg("--alpha")
             self.pamljobs[treenumber].alpha = float(x)
@@ -246,6 +248,8 @@ class Engine:
         if self.argParser.doesContainArg("--cleandata"):
             x = self.argParser.getArg("--cleandata")
             self.pamljobs[treenumber].cleandata = int(x)
+        if self.argParser.doesContainArg("--fix_asrv"):
+            self.pamljobs[treenumber].fix_asrv = True
         if self.argParser.doesContainArg("--alpha"):
             x = self.argParser.getArg("--alpha")
             self.pamljobs[treenumber].alpha = float(x)

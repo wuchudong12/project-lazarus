@@ -17,14 +17,15 @@ from includeMe import *
 from util import *
 from version import *
 
-orderedOptions = ["D", "A", "T", "P", "M", "B", "V", "O", "I", "U"]
+orderedOptions = ["D", "A", "T", "P", "M", "B", "V", "Z", "O", "I", "U"]
 
 optionNames = {"D":"datatype                ",
                "O":"output to this location ",
                "A":"sequence alignment file ",
                "T":"newick tree file        ",
                "B":"branch lengths          ",
-               "V":"rate of evolution       ",
+               "V":"evo. rate heterogeneity ",
+               "Z":"alpha (for +G model)    ",
                "P":"path to folder w/ models",
                "M":"evolutionary model      ",
                "I":"place ancestral gaps    ",
@@ -47,6 +48,7 @@ optionValues = {"D":None,
                 "T":None,
                 "B":"find ML estimate",
                 "V":"use 4 gamma-distributed categories",
+                "Z":"find ML estimate",
                 "M":None,
                 "I":"No, I'll manually do it later.",
                 "U":None,
@@ -61,6 +63,7 @@ optionErrorMessages = {"D":[None],
                       "M":[None],
                       "P":[None],
                       "V":[None],
+                      "Z":[None],
                       "G":[None],
                       "I":[None],
                       "U":[None]} # G is for general error message
@@ -74,6 +77,7 @@ optionTipsMessages = {"D":[None],
                       "M":[None],
                       "P":[None],
                       "V":[None],
+                      "Z":[None],
                       "I":[None],
                       "U":[None]}
 
@@ -315,6 +319,11 @@ def runLazarus():
     
     if optionValues["V"] == "use 4 gamma-distributed categories":
         command += " --asrv 4"
+        if optionValues["Z"] != "find ML estimate":
+            command += " --fix_asrv True"
+            command += " --alpha " + optionValues["Z"]
+        else:
+            command += " --alpha 1.0"
     elif optionValues["V"] == "use fixed rate across sites":
         command += " --asrv 0"
     
@@ -378,6 +387,10 @@ while choice != "X":
         cycleToNextMethod("B")
     elif choice == "V":
         cycleToNextMethod("V")
+    elif choice == "Z":
+        p = raw_input('What is the alpha value for the gamma-distributed model? >')
+        optionValues[choice] = p
+        parseOutgroup()
     elif choice == "Y":
         if checkOptionsComplete():
             runLazarus()

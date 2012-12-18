@@ -71,25 +71,26 @@ class Engine:
         # Verify that the tree(s) and the alignment contain the same taxa:
         countTrees = 0
         for line in lines:
-            try:
-                thisTree = LoadTree(treestring = line.strip())
-                
-                treeNames = []
-                for t in thisTree.tips():
-                    treeNames.append(t.Name)
-                
-                countTrees += 1
-                # are all the tips of the tree in our alignment?
-                for tip in treeNames:
-                    if al.getSeqNames().__contains__(tip.__str__()) == False:
-                        self.logger.throwError("Your tree contains a taxon named " + tip.__str__() + ", which I cannot find in your alignment.")
+            if line.__len__() > 3: # only look at non-empty lines...
+                try:
+                    thisTree = LoadTree(treestring = line.strip())
                     
-                # the reverse question: are all the alignment taxa in this tree?
-                for taxon in al.getSeqNames():
-                    if treeNames.__contains__(taxon) == False:
-                        self.logger.throwError("Your alignment contains a taxon named " + taxon + ", which I cannot find in tree # " + countTrees.__str__() + " of your tree file." )  
-            except parse.record.FileFormatError:
-                self.logger.throwError("I had some trouble reading your tree file at this line:\n" + line)  
+                    treeNames = []
+                    for t in thisTree.tips():
+                        treeNames.append(t.Name)
+                    
+                    countTrees += 1
+                    # are all the tips of the tree in our alignment?
+                    for tip in treeNames:
+                        if al.getSeqNames().__contains__(tip.__str__()) == False:
+                            self.logger.throwError("Your tree contains a taxon named " + tip.__str__() + ", which I cannot find in your alignment.")
+                        
+                    # the reverse question: are all the alignment taxa in this tree?
+                    for taxon in al.getSeqNames():
+                        if treeNames.__contains__(taxon) == False:
+                            self.logger.throwError("Your alignment contains a taxon named " + taxon + ", which I cannot find in tree # " + countTrees.__str__() + " of your tree file." )  
+                except parse.record.FileFormatError:
+                    self.logger.throwError("I had some trouble reading your tree file at this line:\n" + line)  
 
         # check the model:
         if useAminoAcids:
@@ -128,7 +129,7 @@ class Engine:
         ag = open(outputDirectory + "/reformatted_alignment.phy", "w")
         ag.write(al.getSeqNames().__len__().__str__() + "  " + al.__len__().__str__() + "\n")
         for t in cleantokens:
-            #print t
+            #print "engine 132", t
             if t.__contains__(">"):
                 t = re.sub(">", "", t)
                 ag.write("\n" + t + "   ")
@@ -139,46 +140,57 @@ class Engine:
                 
         countTrees = 0
         for line in lines:
-            countTrees += 1
-            
-            # create one subdirectory per tree
-            thisTreeDir = outputDirectory + "/tree" + countTrees.__str__()
-            if os.path.exists( thisTreeDir ) == False:
-                os.system("mkdir " + thisTreeDir )
-            
-            # build a subdirectory in which PAML will operate
-            thisExecutionDir = thisTreeDir + "/pamlWorkspace"
-            if os.path.exists( thisExecutionDir ) == False:
-                os.system("mkdir " + thisExecutionDir )
-            
-            # print this tree into the PAMl workspace
-            thisTree = LoadTree(treestring = line.strip())
-            tg = open(thisExecutionDir + "/reformatted_tree.tre", "w")
-            tg.write( thisTree.tips().__len__().__str__() + "  1" + "\n" )
-            if False == line.__contains__(";"):
-                line = line + ";"
-            tg.write(line + "\n")
-            tg.close()
-            
-            # build a soft link to the alignment (located in the output directory):
-            if os.path.exists(thisExecutionDir + "/reformatted_alignment.phy"):
-                os.system("rm " + thisExecutionDir + "/reformatted_alignment.phy")
-            os.system("ln -sf " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/reformatted_alignment.phy")
-            
-            # build a soft link to the model, in each execution directory:
-            if useAminoAcids:
-                if os.path.exists(thisExecutionDir + "/model.dat"):
-                    os.system("rm " + thisExecutionDir + "/model.dat")
-                #print "\n. making softlink for model here: " + thisExecutionDir + "/model.dat"
-                command = "ln -sf " + modelpath + " " + thisExecutionDir + "/model.dat"
-                #print command
-                os.system(command)
+            if line.__len__() > 3: # ignore empty lines:
+                countTrees += 1
+                
+                # create one subdirectory per tree
+                thisTreeDir = outputDirectory + "/tree" + countTrees.__str__()
+                if os.path.exists( thisTreeDir ) == False:
+                    os.system("mkdir " + thisTreeDir )
+                
+                # build a subdirectory in which PAML will operate
+                thisExecutionDir = thisTreeDir + "/pamlWorkspace"
+                if os.path.exists( thisExecutionDir ) == False:
+                    os.system("mkdir " + thisExecutionDir )
+                
+                # print this tree into the PAMl workspace
+                ts = line.strip()
+                ts = re.sub("\)\d+\.*\d+\:", "):", ts)
+                ts = re.sub("\[", "", ts)
+                ts = re.sub("\]", "", ts)
     
-            self.data.addTree(countTrees)
-            if useAminoAcids:
-                self.buildCodemlJob(countTrees, thisExecutionDir, "reformatted_tree.tre", "reformatted_alignment.phy", "model.dat")
-            else:
-                self.buildBasemlJob(countTrees, thisExecutionDir, "reformatted_tree.tre", "reformatted_alignment.phy", modelName)
+                thisTree = LoadTree(treestring = ts)
+                tg = open(thisExecutionDir + "/reformatted_tree.tre", "w")
+                tg.write( thisTree.tips().__len__().__str__() + "  1" + "\n" )
+                if False == line.__contains__(";"):
+                    line = line + ";"
+                tg.write(line + "\n")
+                tg.close()
+                
+                # build a soft link to the alignment (located in the output directory):
+                if os.path.exists(thisExecutionDir + "/reformatted_alignment.phy"):
+                    os.system("rm " + thisExecutionDir + "/reformatted_alignment.phy")
+                # for debugging:
+                #os.system("ls -alh " + outputDirectory)
+                #os.system("ls -alh " + thisExecutionDir)
+                #print "\n\n engine 173 \n\n"
+                #print "cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/reformatted_alignment.phy"
+                os.system("cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/")#reformatted_alignment.phy")
+                
+                # build a soft link to the model, in each execution directory:
+                if useAminoAcids:
+                    if os.path.exists(thisExecutionDir + "/model.dat"):
+                        os.system("rm " + thisExecutionDir + "/model.dat")
+                    #print "\n. making softlink for model here: " + thisExecutionDir + "/model.dat"
+                    command = "ln -sf " + modelpath + " " + thisExecutionDir + "/model.dat"
+                    #print command
+                    os.system(command)
+        
+                self.data.addTree(countTrees)
+                if useAminoAcids:
+                    self.buildCodemlJob(countTrees, thisExecutionDir, "reformatted_tree.tre", "reformatted_alignment.phy", "model.dat")
+                else:
+                    self.buildBasemlJob(countTrees, thisExecutionDir, "reformatted_tree.tre", "reformatted_alignment.phy", modelName)
 
     #
     # This is a helper method, used by the method self.importFiles

@@ -17,7 +17,7 @@ from includeMe import *
 from util import *
 from version import *
 
-orderedOptions = ["D", "A", "T", "P", "M", "B", "V", "Z", "O", "I", "U"]
+orderedOptions = ["D", "A", "T", "P", "M", "B", "V", "Z", "O", "I", "U", "L"]
 
 optionNames = {"D":"datatype                ",
                "O":"output to this location ",
@@ -29,7 +29,8 @@ optionNames = {"D":"datatype                ",
                "P":"path to folder w/ models",
                "M":"evolutionary model      ",
                "I":"place ancestral gaps    ",
-               "U":"outgroup taxa           "
+               "U":"outgroup taxa           ",
+               "L":"path to lazarus_batch.py"
                }
 
 # some options have presets.  For example, we have several built-in amino acid models
@@ -53,6 +54,7 @@ optionValues = {"D":None,
                 "I":"No, I'll manually do it later.",
                 "U":None,
                 "P":"current directory",
+                "L":None
                 }
 
 optionErrorMessages = {"D":[None],
@@ -66,7 +68,8 @@ optionErrorMessages = {"D":[None],
                       "Z":[None],
                       "G":[None],
                       "I":[None],
-                      "U":[None]} # G is for general error message
+                      "U":[None],
+                      "L":[None]} # G is for general error message
                         
 
 optionTipsMessages = {"D":[None],
@@ -79,7 +82,8 @@ optionTipsMessages = {"D":[None],
                       "V":[None],
                       "Z":[None],
                       "I":[None],
-                      "U":[None]}
+                      "U":[None],
+                      "L":[None]}
 
 # returns the next option to display
 def cycleToNextMethod(key):
@@ -266,7 +270,7 @@ def paintHeader():
     print "=============================================="
     print "  LAZARUS for PAML " + get_version_string()
     print "  questions? contact Victor Hanson-Smith" 
-    print "                  at victorhs@cs.uoregon.edu"
+    print "          at victorhansonsmith@gmail.com"
     print "=============================================="
 
 def paintOption(key):
@@ -296,9 +300,9 @@ def paint():
 ########################################
 def runLazarus():
     if optionValues["D"] == "nucleotide":
-        command = "lazarus_batch --baseml"
+        command = "python " + optionValues["L"] + "/lazarus_batch.py --baseml"
     else:
-        command = "lazarus_batch --codeml"
+        command = "python " + optionValues["L"] + "/lazarus_batch.py --codeml"
     command += " --outputdir " + optionValues["O"] 
     command += " --alignment " + optionValues["A"]
     command += " --tree " + optionValues["T"]
@@ -335,6 +339,15 @@ def runLazarus():
     print "Invoking Lazarus with this command:"
     print command
     os.system(command)
+    exit(1)
+    #fout = open("scratch.sh", "w")
+    #fout.write("#!/bin/bash\n")
+    #fout.write(command)
+    #fout.close()
+    #os.system("export lazarus_batch='python /Users/victor/Documents/EclipseWork/Lazarus/lazarus_batch.py'")
+    #os.system("source ./scratch.sh")
+    #os.system("bash scratch.sh")
+    #os.system("rm scratch.sh")
 
 ##########################################
 # Main
@@ -364,6 +377,11 @@ while choice != "X":
         p = raw_input('Where is the directory containing models? >')
         optionValues[choice] = p
         checkModel(choice)
+    elif choice == "L":
+        p = raw_input('Where is the directory containing lazarus_batch.py? >')
+        optionValues[choice] = p
+        if False == os.path.exists(p + "/lazarus_batch.py"):
+            optionErrorMessages["L"][0] = "I can't find lazarus_batch.py in the directory " + p
     elif choice == "D":
         cycleToNextMethod("D")
         if optionValues["D"] == "nucleotide":

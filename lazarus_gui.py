@@ -17,7 +17,7 @@ from includeMe import *
 from util import *
 from version import *
 
-orderedOptions = ["D", "A", "T", "P", "M", "B", "V", "Z", "O", "I", "U", "L"]
+orderedOptions = ["D", "A", "T", "P", "M", "B", "V", "Z", "O", "I", "U"]
 
 optionNames = {"D":"datatype                ",
                "O":"output to this location ",
@@ -29,8 +29,7 @@ optionNames = {"D":"datatype                ",
                "P":"path to folder w/ models",
                "M":"evolutionary model      ",
                "I":"place ancestral gaps    ",
-               "U":"outgroup taxa           ",
-               "L":"path to lazarus_batch.py"
+               "U":"outgroup taxa           "
                }
 
 # some options have presets.  For example, we have several built-in amino acid models
@@ -54,7 +53,7 @@ optionValues = {"D":None,
                 "I":"No, I'll manually do it later.",
                 "U":None,
                 "P":"current directory",
-                "L":None
+                "L":"$LAZARUS"
                 }
 
 optionErrorMessages = {"D":[None],
@@ -68,8 +67,7 @@ optionErrorMessages = {"D":[None],
                       "Z":[None],
                       "G":[None],
                       "I":[None],
-                      "U":[None],
-                      "L":[None]} # G is for general error message
+                      "U":[None]}
                         
 
 optionTipsMessages = {"D":[None],
@@ -82,8 +80,7 @@ optionTipsMessages = {"D":[None],
                       "V":[None],
                       "Z":[None],
                       "I":[None],
-                      "U":[None],
-                      "L":[None]}
+                      "U":[None]}
 
 # returns the next option to display
 def cycleToNextMethod(key):

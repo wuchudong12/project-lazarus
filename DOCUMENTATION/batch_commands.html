@@ -1,0 +1,75 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+   	  <link rel="stylesheet" type="text/css" href="lazarus.css">
+      <TITLE>Lazarus: a software tool for reconstructing ancestral protein sequences</TITLE>
+   </HEAD>
+<BODY>
+<p><a href='http://www.uoregon.edu/~joet/'><small>Thornton Lab</small></a> | <a href="http://www.victorhansonsmith.com"><small>Victor Hanson-Smith</small></a></p>
+<h1>Lazarus</h1>
+<p>A software tool for reconstructing ancestral molecular sequences.</p>
+<hr>
+<p><a href="index.html">Overview</a> | <a href="installation.html">Download and Install</a> | <a href="tutorial.html">Tutorial</a> | <a href="batch_commands.html">Command-Line Reference</a></p>
+<hr>
+
+
+<h2>lazarus_gui.py</h2>
+
+<p>No parameters are required to launch this script.</p>
+
+<hr>
+
+
+
+
+
+
+<h2>lazarus.py [mode] [parameters]</h2>
+
+<h4>[mode]:</h4>
+<p>Lazarus runs in one of three modes:
+<br><br><strong>--codeml</strong> launches codeml jobs.
+<br><br><strong>--baseml</strong> launches baseml jobs.
+<br><br><strong>--getanc</strong> gets ancestors, after codeml or baseml has been run.</p>
+
+<h4>[parameters]:</h4>
+
+<p><strong>The following  command-line parameters are required:</strong></p>
+<p><strong>--alignment X</strong>, where X is the filepath of a FASTA-formatted sequence alignment.
+<br><br> <strong>--tree X</strong>, where X is the filepath to a file containing one or more Newick-formatted phylogenies.
+<br><br> <strong>--model X</strong>, where X is the filepath to a Markovian substitution matrix.  Theese matrices are included with PAML, and can be found in the folder <em>paml/dat/</em>.  For example, the JTT model is the file <em>jones.dat</em>.
+<br><br> <strong>--outputdir X</strong>, where X is path to desired output directory.  All output from PAML and Lazarus will be written to this directory.
+<br><br> <strong>--codeml</strong> This option will run amino acid analysis.  
+<br><br> <strong>--baseml</strong> This option will run nucleotide analysis.
+</p>
+
+<p><strong>The following command-line parameters are optional:</strong></p>
+<p><strong>--branch_lengths X</strong>, where X = 'fixed' or 'estimate'.  If you specify 'fixed', then PAML will use the branch lengths on the tree(s) in the file specified by the parameter --tree.
+If there are no branch lengths on the specified trees, then PAML will probably throw an error and crash.
+If you specify 'estimate', then PAML will find maximum likelihood values for the branches on the tree(s).  If you are using a tree that you previously estimated with PhyML, RAxML, or some other maximum
+likelihood phylogenetic estimator, then it is suggested that you use the 'fixed' option for --branch_lengths.
+<br><br> <strong>--asrv X</strong>, where X = the number of gamma categories, or '0' for no among site rate variation.
+<br><br> <strong>--alpha X</strong>, where X = the alpha value for the gamma model.
+<br><br> <strong>--fix_asrv X</strong>, where X = 'True' or 'False'.  If True, then Lazarus will use the fixed alpha value specified by --alpha.  If False, then Lazarus will find the ML estimate of alpha.
+
+<br><br> <strong>--verbose</strong> This option will make Lazarus produce noisy output.
+<br><br> <strong>--gapcorrect</strong> This option will parsimoniously place gaps at ancestral sites, according to Fitch's parsimony.  This parameter requires that you also specify a value for the parameter <strong>--gapcorrect</strong>.
+<br><br> <strong>--outgroup L</strong>, where L is a list of outgroup taxa, formatted as [A,B,C] for taxa A, B, and C.  Please use brackets [ and ], and no spaces.
+</p>
+
+<hr>
+
+
+
+<h2>plot_pp_distribution.py [anc path]</h2>
+
+<p>. . . where [anc path] is the filepath to the PP distribution for you ancestor of interest.  This is usually
+a file ending with <strong>.dat</strong>.</p>
+
+<hr>
+
+
+
+</BODY>
+</HTML>

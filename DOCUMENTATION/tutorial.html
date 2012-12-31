@@ -1,0 +1,255 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+<HTML>
+   <HEAD>
+   	  <link rel="stylesheet" type="text/css" href="lazarus.css">
+      <TITLE>Lazarus: a software tool for reconstructing ancestral protein sequences</TITLE>
+   </HEAD>
+<BODY>
+<p><a href='http://www.uoregon.edu/~joet/'><small>Thornton Lab</small></a> | <a href="http://www.victorhansonsmith.com"><small>Victor Hanson-Smith</small></a></p>
+<h1>Lazarus</h1>
+<p>A software tool for reconstructing ancestral molecular sequences.</p>
+<hr>
+<p><a href="index.html">Overview</a> | <a href="installation.html">Download and Install</a> | <a href="tutorial.html">Tutorial</a> | <a href="batch_commands.html">Command-Line Reference</a></p>
+<hr>
+
+<h2>A Lazarus Tutorial</h2>
+<h4>by Victor Hanson-Smith</h4>
+<h4>Last updated: December 2012</h4>
+
+<p>Here is a tutorial demonstrating how to use Lazarus.  In this example, we will reconstruct ancestral sequences for the family of
+ steroid-hormone receptor (SHR) ligand-binding
+domains.  This data comes from 
+<a href="http://www.sciencemag.org/cgi/content/abstract/312/5770/97">Bridgham et al., Science, 2006.</a></p>
+
+
+<p>The files for this example are included in the Lazarus ZIP file (see the page on <a href="installation.html">Download and Install</a>).
+Look in the folder named <em>DOCUMENTATION/example_data</em>.  Or, you can download the SHR data here:</p>
+
+<div class="divGreen">
+<h4>Files for This Example:</h4>
+<ul>
+<li>Sequence Alignment: <a href="example_data/apgm83.fasta">apgm83.fasta</a></li>
+<li>Phylogenetic Trees: <a href="example_data/apgm83.newick">apgm83.newick</a></li>
+<!--<li>Amino Acid Substitution Matrix: <a href="../paml/dat/jones.dat">jones.dat</a></li>-->
+</ul>
+</div>  
+
+<h4>Sequence Alignment</h4>
+<p>The file named <em>apgm83.fasta</em> is a FASTA-formatted multiple sequence alignment of sixty protein sequences broadly sampled from the
+steroid-hormone recepter gene family.  
+
+<h4>Phylogenetic Trees</h4>
+<p>The file named <em>apgm83.newick</em> contains three different Newick-formatted phylogenetic trees, with one tree 
+per line.  These trees represent our phylogenetic uncertainty about the SHR phylogeny.</p>
+
+
+<h4>1. Navigate to the tutorial files.</h4>
+
+<p>Let's reconstruct the ancestral sequence for the 
+most-recent-common ancestor (MRCA) of the mineralocorticoid (MR) and glucocorticoid (GR) receptors.
+Let's call this ancestor Anc.MRGR.</p>
+
+<p>In this example, we will reconstruct a version of Anc.MRGR on each of the Newick-formatted trees
+contained in the the file <em>apgm83.newick</em>.  We will then integrate the ancestors from all
+trees, using the "EB"
+method described in <a href="http://mbe.oxfordjournals.org/content/27/9/1988.abstract">Hanson-Smith et al., 2010, 
+Molecular Biology and Evolution</a>.
+
+<p>To start, open your terminal and navigate to the folder containing tutorial files.  
+These files are included in the Lazarus ZIP file in the folder <em>/DOCUMENTATION/example_data</em>.  On my machine, 
+the full path to this folder
+is <em>/Users/victor/Applications/Lazarus/DOCUMENTATION/example_data</em>.  As you continue reading this tutorial, my path will
+appear in some of the screenshots.  Keep in mind that the path names on your computer will be different than what you see
+in screenshots.</p>
+
+<div class="divBlue">
+<p class="code">$>cd /Users/victor/Applications/Lazarus/DOCUMENTATION/example_data</p>
+</div>  
+
+
+<h4>2. Launch the Lazarus GUI.</h4>
+
+<p>Use Python to load the Lazarus GUI as shown below:</p>
+
+<div class="divBlue">
+<p class="code">$>python $LAZARUS/lazarus_gui.py</p>
+</div>  
+
+<p>NOTE: If you receive an error, such as "<em>can't open file 'lazarus_gui.py'</em>," or "<em>No such file or directory</em>,"
+then read the documentation page about <a href="installation.html">downloading and installing</a> Lazarus.</p>
+
+<p>if Lazarus is installed correctly, you will see an interface which looks similar to the screenshot below.</p>
+
+<div align="center">
+<img src="example_data/1.tiff" border=2>
+</div>
+
+<h4>3. Compose the Analysis.</h4>
+
+<p>Use the terminal interface to configure Lazarus with the following options. . .</p>
+<ul>
+<li>Select <strong>D</strong>, and then cycle through the options to select "amino acids."</li>  
+<li>Select <strong>A</strong>, and then type "apgm83.fasta"; Lazarus should automatically detect 60 taxa in the alignment file.</li>
+<li>Select <strong>T</strong>, and then type "apgm83.newick"; Lazarus should automatically identify three trees.</li>
+<li>Select <strong>P</strong>, and then type the path to the directory containing evolutionary models.  
+If you installed Lazarus as shown on <a href="installation.html">the installation page</a>, 
+then you can use the location at "/Applications/lazarus/paml/dat/"</li>
+<li>Select <strong>M</strong>, and then cycle through the options to select the "JTT" model of evolution.</li>
+<li>Select <strong>B</strong>, and select "fixed values" in the tree file for branch lengths.</li>
+<li>Select <strong>V</strong>, and select "4 gamma-distributed categories."</li>
+<li>By default, Lazarus will output your results to you current directory location.  This can be changed
+with the <strong>O</strong> option.  In this tutorial, we will not change this option.</li>
+<li>Use the <strong>I</strong> option to enable insertion/deletion (i.e. indel) characters
+to be placed in ancestors, using Fitch parsimony.  By default,
+the PAML programs <em>codeml</em> and <em>baseml</em> 
+do not provide a model for dealing with indels.  Consequently,
+ <em>codeml</em> and <em>baseml</em> will infer specious ancestral states in indel situations
+ where there most probably was no residue at all.  Use the <strong>I</strong> option to avoid this problem. 
+<li>Use the <strong>U</strong> option to select outgroup taxa.  Type the taxa names as a comma-seperated list.  In this example,
+type "lampreySR1, hagSR1".</li>
+</ul>
+<p>After you configure Lazarus, you should see something like the screenshot below.</p>
+
+<div align="center">
+<img src="example_data/2.tiff" border=2>
+</div>
+
+<h4>4. Start the Analysis.</h4>
+
+<p>Confirm the settings are correct, and type "Y".  You should see output from <em>codeml</em> scroll across the screen.  
+Depending on your processor speed, this step could take a few minutes.  At the end, you should see output 
+which looks like the following screenshot.</p>
+
+<div align="center">
+<img src="example_data/3.jpg" border=2>
+</div>
+
+<p>If you do not see the line "Lazarus is done.", then something wrong happened.
+You may discover the problem if you scroll-up and look for error messages.</p>
+
+<h4>5. Examine the Output.</h4>
+
+<p>Assuming Lazarus finished without error, you will find a collection of files written into the output directory 
+(which was specified with the "O" option
+when you configured the GUI).  You should find the following files. . .</p>
+
+<ul>
+<li><strong>tree_summary.txt</strong> is a list of all trees, each numbered according 
+to their order of appearance in the file <em>apgm83.newick</em>.  Alongside each tree is listed its 
+log likelihood and Bayesian posterior probability.</li>
+<li><strong>lazarus_job_status.log</strong> is a summary of the Lazarus session.</li>
+<li><strong>lazarus_workspace.save</strong> is a serialized Python object.  Under normal conditions, this file can be ignored.  If something
+went wrong with the analysis, this file is useful to debug the problem.</li>
+<li><strong>treeX</strong> is a folder, where X is the number of a tree in your dataset.  In this tutorial, 
+you should find three folders named <strong>tree1</strong>, <strong>tree2</strong>, and <strong>tree3</strong>. 
+Lazarus creates a folder for each tree in your tree file.  In this tutorial, we used three trees, therefore we get three folders.
+Within each tree folder, you will find more files:
+
+<ul>
+<li><strong>treeX.txt</strong> contains two versions of the tree.  The first version is the ML tree with branch lengths.
+The second version is a cladogram lacking branch lengths, but with internal node labeled according to their ancestral number.</li>
+<li><strong>nodeY.dat</strong> is the ancestral state distribution for ancestor numbered Y. 
+There are several of these files.  Y is an ancestral node number, as also listed in <strong>treeX.txt</strong>.  The file nodeY.dat
+contains the posterior probability state distribution of ancestor Y.
+In this tutorial example we have 60 terminal taxa, and internal/ancestral nodes numbered 61 through 118.  You should see files named node61.dat
+through node118.dat.  
+Within these files, each line contains the site number and the distribution of states at that site.  
+For example, on tree 1 at node 100, we find the line "5  A 0.990 S 0.010".  This means that sequence site 5 on node100 is 
+state "A" with posterior probability 990 or "S" with posterior probability 0.010.</li>
+<li><strong>pamlWorkspace</strong> is a directory containing the raw output from PAML, 
+including the control file (baseml.ctl or codeml.ctl) used to invoke PAML.  
+Under normal conditions, you can avoid these PAML files.  If something went wrong with the analysis, however, these
+files are useful for debugging the problem.</li>
+</ul>
+</li>
+</ul>
+
+<h4>6. Get the Ancestor.</h4>
+
+<p>Now let's extract the maximum likelihood (ML) sequence for Anc.MRGR.</p>
+
+<p>The goal here is that we will use the main Lazarus script -- lazarus.py -- to extract
+the appropriate ancestor, based on our specifications of ingroup and outgroup taxa.</p>
+
+<p>The ingroup for Anc.MRGR is all MR and GR sequences.  The outgroup contains the two sequences
+lampreySR1 and hagSR1.  We can extract Anc.MRGR by invoking Lazarus
+as follows:</p>
+
+<div class="divBlue">
+<p class="code">$> python $LAZARUS/lazarus.py --getanc --outgroup [lampreySR1,hagSR1] --ingroup [humMR,humGR]
+</p>
+</div>
+
+<p>Here the parameter "--getanc" instructs Lazarus to get an ancestor, based on the ingroup and outgroup specifications.</p>
+
+<p>Notice that the --ingroup paramter contains only two taxa, while our ingroup actually contains several dozen taxa.
+In this case, the human MR and GR sequences (i.e. humMR and humGR) are sufficient to specify Anc.MRGR.
+  Lazarus finds ancestors
+by first rooting the tree using the taxa in the outgroup list, and then traversing upward from the ingroup leaves into the tree, until
+the most-recent evolutionary intersection is found; this intersection is the specified ancestor.  In this case, any MR and GR representative
+sequence is sufficient to traverse to Anc.MRGR.</p>
+
+<p>As a result of the previous command,
+Lazarus will read the posterior probability distribution for the appropriate ancestor, and 
+will then extract the ML sequence into a file named <em>ancestor.out.txt</em>.
+To see the extracted sequences, type the following into your terminal:</p>
+
+<div class="divBlue">
+<p class="code">$> cat ancestor.out.txt</p>
+</div>
+
+<p>This should produce output similar to that shown in the following screenshot.  
+Notice that Lazarus identified the node number for Anc.MRGR, printed the ML sequence from each of the three,
+and printed the integrated sequence.</p>
+
+<div align="center">
+<img src="example_data/5.tiff" border=2>
+</div>
+
+<p>Next, notice that the script lazarus.py also wrote the posterior probability distribution of Anc.MRGR
+into a temporary file named ancestor-ml.dat.  I suggest you inspect this file using your favorite text editor,
+or do the following:</p>
+
+<div class="divBlue">
+<p class="code">$> cat ancestor.out.txt</p>
+</div>
+
+<h4>7. Assess Statistical Support</h4>
+
+<p>Next, let's  examine the support values for ancestral states in the ML sequence.  Run the Python script
+named <em>plot_pp_distribution.py</em> in order to learn summary statistics about the posterior probability
+distribution of Anc.MRGR.  Invoke the following command:</p>
+
+<div class="divBlue">
+<p class="code">$>python $LAZARUS/plot_pp_distribution.py ancestor-ml.dat</p>
+</div>
+
+<p>You should see output that looks like the following screenshot.</p>
+
+<div align="center">
+<img src="example_data/4.tiff" border=2>
+</div>
+
+
+<hr>
+
+<h4>BATCH MODE:</h4>
+
+<p>The tutorial actions shown in steps 2, 3, and 4 can be accomplished from the command-line -- shown in the command
+below -- without the need for the GUI.  A description of these commands is located in the <a href="batch_commands.html">Command-Line Reference.</a></p>
+
+<div class="divBlue">
+<p class="code">$> python $LAZARUS/lazarus.py --codeml --outputdir /Users/victor/Applications/Lazarus/DOCUMENTATION/example_data --verbose  
+--alignment /lazarus/DOCUMENTATION/example_data/apgm83.fasta 
+--tree /lazarus/DOCUMENTATION/example_data/apgm83.trees.newick --model /lazarus/paml/dat/jones.dat --branch_lengths estimate --asrv 4</p>
+</div>
+
+<p>. . . you will need to change the specific paths in the above command to match your particular setup.</p>
+
+<br>
+
+<hr>
+
+</BODY>
+</HTML>

@@ -297,9 +297,9 @@ def paint():
 ########################################
 def runLazarus():
     if optionValues["D"] == "nucleotide":
-        command = "python " + optionValues["L"] + "/lazarus_batch.py --baseml"
+        command = "python " + optionValues["L"] + "/lazarus.py --baseml"
     else:
-        command = "python " + optionValues["L"] + "/lazarus_batch.py --codeml"
+        command = "python " + optionValues["L"] + "/lazarus.py --codeml"
     command += " --outputdir " + optionValues["O"] 
     command += " --alignment " + optionValues["A"]
     command += " --tree " + optionValues["T"]
@@ -341,7 +341,7 @@ def runLazarus():
     #fout.write("#!/bin/bash\n")
     #fout.write(command)
     #fout.close()
-    #os.system("export lazarus_batch='python /Users/victor/Documents/EclipseWork/Lazarus/lazarus_batch.py'")
+    #os.system("export lazarus='python /Users/victor/Documents/EclipseWork/Lazarus/lazarus.py'")
     #os.system("source ./scratch.sh")
     #os.system("bash scratch.sh")
     #os.system("rm scratch.sh")
@@ -375,10 +375,10 @@ while choice != "X":
         optionValues[choice] = p
         checkModel(choice)
     elif choice == "L":
-        p = raw_input('Where is the directory containing lazarus_batch.py? >')
+        p = raw_input('Where is the directory containing lazarus.py? >')
         optionValues[choice] = p
-        if False == os.path.exists(p + "/lazarus_batch.py"):
-            optionErrorMessages["L"][0] = "I can't find lazarus_batch.py in the directory " + p
+        if False == os.path.exists(p + "/lazarus.py"):
+            optionErrorMessages["L"][0] = "I can't find lazarus.py in the directory " + p
     elif choice == "D":
         cycleToNextMethod("D")
         if optionValues["D"] == "nucleotide":

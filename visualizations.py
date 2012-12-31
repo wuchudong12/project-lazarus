@@ -1,4 +1,14 @@
+################################################
+#
+# 
+#
+#
+
 import os, sys, pickle, re
+
+inpath = sys.argv[1]
+outkern = sys.argv[2]
+R = sys.argv[3]
 
 def floatToString(f):
     return "%.3f"%f
@@ -97,6 +107,6 @@ def Plot_pp_proportions(datpath, outpath):
     f.write("dev.off()\n")
     f.close()
     
-    os.system("R --save < " + outpath + ".cran > " + outpath + ".cran_log") 
+    os.system(R + " --save < " + outpath + ".cran > " + outpath + ".cran_log") 
 
-Plot_pp_proportions(sys.argv[1], sys.argv[2])
+Plot_pp_proportions(inpath, outkern)

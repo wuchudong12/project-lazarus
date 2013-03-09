@@ -77,6 +77,8 @@ try:
         engine.parsePamlResults()
         print "--> Saving your Lazarus workspace. . ."
         engine.saveState()
+        if argParse.getOptionalToggle("--cleanup"):
+            engine.cleanupPamlResults()
         
     x = argParser.doesContainArg("--baseml")
     if x != False:
@@ -89,6 +91,8 @@ try:
         engine.parsePamlResults()
         print "--> Saving your Lazarus workspace. . ."
         engine.saveState()
+        if argParse.getOptionalToggle("--cleanup"):
+            engine.cleanupPamlResults()
         
     # skip PAML, jump to the post-PAML analysis:
     x = argParser.getOptionalArg("--postpaml")

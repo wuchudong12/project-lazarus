@@ -83,7 +83,12 @@ class Engine:
                     # are all the tips of the tree in our alignment?
                     for tip in treeNames:
                         if al.getSeqNames().__contains__(tip.__str__()) == False:
+                            for n in al.getSeqNames():
+                                print "'", n, "'"
+                            for n in treeNames:
+                                print ".", n, "."
                             self.logger.throwError("Your tree contains a taxon named " + tip.__str__() + ", which I cannot find in your alignment.")
+                            
                         
                     # the reverse question: are all the alignment taxa in this tree?
                     for taxon in al.getSeqNames():
@@ -279,6 +284,14 @@ class Engine:
             flag = self.pamljobs[j].verifyResults()
             if flag != True:
                 self.logger.throwError(flag)
+
+    def cleanupPamlResults(self):
+        for job in self.pamljobs:
+            self.logger.updateStatus("Cleaning-up the PAML output for tree " + job.__str__() + ". . .")
+            path1 = self.pamljobs[job].outputDirectory + "/out.paml"
+            path2 = self.pamljobs[job].outputDirectory + "/rst"
+            os.system("rm -f " + path1)
+            os.system("rm -f " + path2)
 
     #
     # Read the files named 'rst' and 'out.paml', which are assumed to exist in the output directory.
@@ -644,6 +657,7 @@ class Engine:
             al = LoadSeqs(alignmentpath, aligned = True)
             self.logger.printMessage("I found your alignment file: " +  alignmentpath, 1)
             self.logger.printMessage("...it appears to contain " + al.getNumSeqs().__str__() + " taxon.", 1)
+            print al.getSeqNames()
             self.logger.updateStatus("Loading your alignment: Success")
             return al
         except parse.record.FileFormatError:

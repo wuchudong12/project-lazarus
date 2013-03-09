@@ -20,6 +20,19 @@
 
 import math, os, sys, re
 
+rsites = []
+
+if sys.argv[2:].__len__() > 0 and sys.argv[2:].__len__() < 3:
+    if sys.argv[2].isdigit() and sys.argv[3].isdigit():
+        limstart = int(sys.argv[2])
+        limstop = int(sys.argv[3])
+        for i in range(limstart, limstop+1):
+            rsites.append(i)
+else:
+    for i in sys.argv[2:]:
+        print i
+        rsites.append( int(i) )
+
 def floatToString(f):
     return "%.3f"%f
 
@@ -78,19 +91,37 @@ def Plot_pp_proportions(datpath):
     lines = fin.readlines()
     fin.close()
     
+    count_total_sites = 0
+    
     ppbins = {}
     for i in range(0,21):
         ppbins[i] = []
-    
-    count_total_sites = 0
-    
+        
     allpps = []
     
     for l in lines:
+        print l
         l = l.strip()
         tokens = l.split()
+        site = int(tokens[0])
+#        if limstart != False:
+#            if site < limstart:
+#                continue
+#        if limstop != False:
+#            if site > limstop:
+#                continue
+        if rsites.__len__() > 0 and site not in rsites:
+            continue
+        
+#        if limstart != False:
+#            if site < limstart:
+#                continue
+#        if limstop != False:
+#            if site > limstop:
+#                continue
         state = tokens[1]
         if state != "-":
+            print site, state
             pp = float(tokens[2])
             allpps.append(pp)
             ppbins[ binForProb(pp) ].append( pp )
@@ -131,5 +162,57 @@ def Plot_pp_proportions(datpath):
             print "\t[%.2f"%(probForBin(i) - 0.025) + ", %.2f)"%(probForBin(i) + 0.025), "\t%.3f"%points[i]
         else:
             print "\t[1.00]\t\t", "%.3f"%points[i]
+    return [ppbins,count_total_sites]
 
-Plot_pp_proportions(sys.argv[1])
+def R_barplot(data):
+    xlab = "PP"
+    ylab = "P"
+    filekeyword = "anc"
+    
+    pointsets = data.keys()
+    pointsets.sort()
+    
+    finalset = pointsets[ pointsets.__len__()-1 ]
+    tablepath = "barplot.table." + filekeyword + ".txt"
+    fout = open(tablepath, "w")
+    for p in pointsets:
+        if p != finalset:
+            fout.write(p.__str__() + "\t")
+        else:
+            fout.write(p.__str__() )
+    fout.write("\n")
+    for p in pointsets:
+        if p != finalset:
+            fout.write( data[p].__str__() + "\t")
+        else:
+            fout.write( data[p].__str__() )            
+    fout.write("\n")
+    fout.close()
+    
+            
+    pdfpath = "barplot." + filekeyword + ".pdf"
+    cranstr = "pdf(\"" + pdfpath + "\", width=8, height=4);\n"    
+    cranstr += "bars <- read.table(\"" + tablepath + "\", header=T, sep=\"\\t\")\n"
+    
+    print pointsets
+
+
+    cranstr += "pointsets <- c("
+    for p in pointsets:
+        cranstr += (p).__str__() + ","
+    cranstr = re.sub(",$", "", cranstr)
+    cranstr += ");\n"
+    
+    cranstr += "barx = barplot(as.matrix(bars), beside=TRUE, col=\"black\", ylim=range(0,1.0), names.arg=pointsets);\n"
+    cranpath = "barplot." + filekeyword + ".cran"
+    fout = open(cranpath, "w")
+    fout.write( cranstr )
+    fout.close()
+    
+    os.system("r --no-save < " + cranpath)
+
+[ppbins,count] = Plot_pp_proportions(sys.argv[1])
+pp_p = {}
+for pp in ppbins:
+    pp_p[pp] = float(ppbins[pp].__len__())/count
+R_barplot(pp_p)

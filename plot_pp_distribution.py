@@ -20,17 +20,20 @@
 
 import math, os, sys, re
 
+#
+# Identify restriction sites.
+#
 rsites = []
-
 if sys.argv[2:].__len__() > 0 and sys.argv[2:].__len__() < 3:
     if sys.argv[2].isdigit() and sys.argv[3].isdigit():
         limstart = int(sys.argv[2])
         limstop = int(sys.argv[3])
         for i in range(limstart, limstop+1):
             rsites.append(i)
+            #print i
 else:
     for i in sys.argv[2:]:
-        print i
+        #print i
         rsites.append( int(i) )
 
 def floatToString(f):
@@ -87,6 +90,7 @@ def probForBin(b):
 # INPUT: a *.dat file, with a distribution of ancestral states for all sites.
 # OUTPUT: prints to screen the frequencies of PPs (binned into 5% bins).
 def Plot_pp_proportions(datpath):
+    mlseq = ""
     fin = open(datpath, "r")
     lines = fin.readlines()
     fin.close()
@@ -100,7 +104,9 @@ def Plot_pp_proportions(datpath):
     allpps = []
     
     for l in lines:
-        print l
+        if l.__contains__("#") or l.__len__() < 2:
+            continue
+        #print l
         l = l.strip()
         tokens = l.split()
         site = int(tokens[0])
@@ -120,12 +126,16 @@ def Plot_pp_proportions(datpath):
 #            if site > limstop:
 #                continue
         state = tokens[1]
+        mlseq += state
         if state != "-":
-            print site, state
+            #print site, state
             pp = float(tokens[2])
             allpps.append(pp)
             ppbins[ binForProb(pp) ].append( pp )
             count_total_sites += 1
+    print "\n=========================================="
+    print ". ML sequence =", mlseq
+    print "\n"
 
     print "\n=========================================="
     print "\n. Posterior probability (PP) summary"
@@ -140,9 +150,14 @@ def Plot_pp_proportions(datpath):
     sum80 = 0.0
     for i in range(16,21):
         sum80 += ppbins[ i ].__len__()
+
+    sum70 = 0.0
+    for i in range(14,21):
+        sum70 += ppbins[ i ].__len__()
         
     print "\t", int(sum90), "(%.3f%%)"%(sum90 * 1.0 / count_total_sites * 100), "sites have PP >= 0.90 "
     print "\t", int(sum80), "(%.3f%%)"%(sum80 * 1.0 / count_total_sites * 100), "sites have PP >= 0.80 "
+    print "\t", int(sum70), "(%.3f%%)"%(sum70 * 1.0 / count_total_sites * 100), "sites have PP >= 0.80 "
 
     print "\n\tmean PP = \t\t\t%.3f"%mean(allpps)
     print "\tstandard deviation = \t\t%.3f"%sd(allpps)
@@ -194,7 +209,7 @@ def R_barplot(data):
     cranstr = "pdf(\"" + pdfpath + "\", width=8, height=4);\n"    
     cranstr += "bars <- read.table(\"" + tablepath + "\", header=T, sep=\"\\t\")\n"
     
-    print pointsets
+    #print pointsets
 
 
     cranstr += "pointsets <- c("

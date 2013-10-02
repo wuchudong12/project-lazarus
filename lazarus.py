@@ -77,7 +77,7 @@ try:
         engine.parsePamlResults()
         print "--> Saving your Lazarus workspace. . ."
         engine.saveState()
-        if argParse.getOptionalToggle("--cleanup"):
+        if argParser.getOptionalToggle("--cleanup"):
             engine.cleanupPamlResults()
         
     x = argParser.doesContainArg("--baseml")
@@ -91,7 +91,7 @@ try:
         engine.parsePamlResults()
         print "--> Saving your Lazarus workspace. . ."
         engine.saveState()
-        if argParse.getOptionalToggle("--cleanup"):
+        if argParser.getOptionalToggle("--cleanup"):
             engine.cleanupPamlResults()
         
     # skip PAML, jump to the post-PAML analysis:
@@ -111,6 +111,8 @@ try:
             engine = loadState(argParser.getArg("--outputdir") + "/lazarus_workspace.save")
             engine.argParser = argParser
         engine.getAncestralSequence()          
+        if argParser.getOptionalToggle("--cleanup"):
+            engine.cleanupPamlResults()
     
 except AssertionError:
     print "\nYikes! Something went wrong.\nLazarus is stopping."

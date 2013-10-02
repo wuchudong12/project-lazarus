@@ -290,8 +290,10 @@ class Engine:
             self.logger.updateStatus("Cleaning-up the PAML output for tree " + job.__str__() + ". . .")
             path1 = self.pamljobs[job].outputDirectory + "/out.paml"
             path2 = self.pamljobs[job].outputDirectory + "/rst"
+            path3 = self.pamljobs[job].outputDirectory + "/rates"
             os.system("rm -f " + path1)
             os.system("rm -f " + path2)
+            os.system("rm -f " + path3)
 
     #
     # Read the files named 'rst' and 'out.paml', which are assumed to exist in the output directory.

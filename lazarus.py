@@ -101,7 +101,7 @@ try:
         print "--> Importing your files. . ."
         engine.importFiles()
         print "--> Parsing PAML results. . ."    
-        engine.parseP-amlResults()
+        engine.parsePamlResults()
         print "--> Saving your Lazarus workspace. . ."
         engine.saveState()
             

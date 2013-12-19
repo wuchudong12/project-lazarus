@@ -176,7 +176,7 @@ class Tree:
         else:
             c = markedChildren[0]
             node.params.__delitem__(mark)
-            #print "unmarking node " + node.Name
+            #print "tree.py 179: unmarking node " + node.Name
             return self.unmarkRecur( markedChildren[0], mark )    
     #
     # Recur down the tree.
@@ -283,22 +283,25 @@ class Tree:
         # reset any a priori labels:
         self.reset_node_params(descendants + outgroup)
         
-        #
-        # walk up the tree, marking ingroup nodes
-        #        
+        # Get the node objects corresponding to the ingroup...  
         descNodes = {}
         for o in descendants:
             n = self.root.getNodeMatchingName(o)
             n.params["ingroup"] = 1
             descNodes[o] = n
+        # for each node in the ingroup....
         for n in descNodes:
+            #print "tree.py 294: Starting mark chain at ", n
+            # get the node's parent
             next = descNodes[n].Parent
             
             while next != None:
                 if next.params.__contains__("ingroup"):
-                    #if next.params["mark"] == 1:
+                    # we've interested another climbing path, so stop.
+                    #print "tree.py 301: Stopping at " + next.Name
                     break
                 else:
+                    # mark the parent
                     next.params["ingroup"] = 1
                     #print "Marking node " + next.Name
                 next = next.Parent
@@ -306,14 +309,14 @@ class Tree:
         # clean-up our markings, for the case where we marked too-high up the tree.
         self.unmarkRecur(self.root, "ingroup")
         
-        #
-        # walk up the tree, marking outgroup nodes
-        #
+
+        # get the outgroup nodes:
         outNodes = {}
         for o in outgroup:
             n = self.root.getNodeMatchingName(o)
             n.params["outgroup"] = 1
             outNodes[o] = n
+        # for each outgroup node, walk up the tree and mark nodes
         for n in outNodes:
             next = outNodes[n].Parent
             while next != None:

@@ -187,7 +187,7 @@ class BasemlJob(PamlJob):
             f.write("alpha = " + self.alpha.__str__() + "\n")
             f.write("ncatG = 4\n")
         else:
-            f.write("alpha = 0\n")
+            f.write("alpha = 1.0\n")
         f.write("RateAncestor = 2\n")
         f.write("Small_Diff = 1.0e-6\n")
         f.write("cleandata = " + self.cleandata.__str__() + "\n") # remove sites with "X" or "?" or other ambiguity

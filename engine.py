@@ -228,9 +228,13 @@ class Engine:
             x = self.argParser.getArg("--asrv")
             if x == "0":
                 self.pamljobs[treenumber].among_site_rate_variation = False
+                self.fix_asrv = False
             else:
                 self.pamljobs[treenumber].among_site_rate_variation = True
                 self.pamljobs[treenumber].ncat_gamma = float(x)
+        else:
+            self.pamljobs[treenumber].among_site_rate_variation = False
+            self.fix_asrv = False          
         if self.argParser.doesContainArg("--cleandata"):
             x = self.argParser.getArg("--cleandata")
             self.pamljobs[treenumber].cleandata = int(x)
@@ -262,6 +266,9 @@ class Engine:
             else:
                 self.pamljobs[treenumber].among_site_rate_variation = True
                 self.pamljobs[treenumber].ncat_gamma = float(x)
+        else:
+            self.pamljobs[treenumber].among_site_rate_variation = False
+            self.fix_asrv = False 
         if self.argParser.doesContainArg("--cleandata"):
             x = self.argParser.getArg("--cleandata")
             self.pamljobs[treenumber].cleandata = int(x)
@@ -588,7 +595,6 @@ class Engine:
         """a helper function for places_ancestral_gaps"""
         
         #print "preorder_traversal, node_name=", node_name, " column_number=", column_number
-        
         n = None
         # 1. is this node the root of the entire tree? 
         # this case is important because the re-rooting process likely added a node whose

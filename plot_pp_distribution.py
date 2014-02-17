@@ -75,7 +75,6 @@ def stderr(set):
     return (sd(set) / math.sqrt( set.__len__() ) )
 
 
-
 # returns a bin number for this P value
 def binForProb(p):
     return int(p / 0.05)

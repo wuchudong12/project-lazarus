@@ -36,4 +36,3 @@ aa_modelPaths = {"JTT":"jones.dat",
               "Dayhoff":"dayhoff.dat", 
               "cpREV":"cpREV.dat"}
     
-

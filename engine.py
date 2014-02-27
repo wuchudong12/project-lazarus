@@ -121,6 +121,7 @@ class Engine:
         if os.path.exists(outputDirectory) == False:
             os.system("mkdir " + outputDirectory)
 
+        # Write the alignment to outputDirectory + "/reformatted_alignment.phy"
         fastaString = ""
         tokens = al.__str__().split("\n")
         cleantokens = []
@@ -142,7 +143,8 @@ class Engine:
                 ag.write(t)
         #ag.write(fastaString + "\n")
         ag.close()
-                
+             
+        # Write the tree to thisExecutionDir + "/reformatted_tree.tre"   
         countTrees = 0
         for line in lines:
             if line.__len__() > 3: # ignore empty lines:
@@ -163,7 +165,6 @@ class Engine:
                 ts = re.sub("\)\d+\.*\d+\:", "):", ts)
                 ts = re.sub("\[", "", ts)
                 ts = re.sub("\]", "", ts)
-    
                 thisTree = LoadTree(treestring = ts)
                 tg = open(thisExecutionDir + "/reformatted_tree.tre", "w")
                 tg.write( thisTree.tips().__len__().__str__() + "  1" + "\n" )
@@ -173,17 +174,18 @@ class Engine:
                 tg.close()
                 
                 # build a soft link to the alignment (located in the output directory):
-                if os.path.exists(thisExecutionDir + "/reformatted_alignment.phy"):
-                    os.system("rm " + thisExecutionDir + "/reformatted_alignment.phy")
+                #if os.path.exists(thisExecutionDir + "/reformatted_alignment.phy"):
+                #    os.system("rm " + thisExecutionDir + "/reformatted_alignment.phy")
                 # for debugging:
                 #os.system("ls -alh " + outputDirectory)
                 #os.system("ls -alh " + thisExecutionDir)
                 #print "\n\n engine 173 \n\n"
                 #print "cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/reformatted_alignment.phy"
-                #os.system("cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/")#reformatted_alignment.phy")
+                os.system("cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/")#reformatted_alignment.phy")
                 
                 # build a soft link to the model, in each execution directory:
                 if useAminoAcids:
+                    # remove any previous soft links:
                     if os.path.exists(thisExecutionDir + "/model.dat"):
                         os.system("rm " + thisExecutionDir + "/model.dat")
                     #print "\n. making softlink for model here: " + thisExecutionDir + "/model.dat"

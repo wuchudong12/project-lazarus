@@ -47,6 +47,9 @@ class DataWharehouse:
         # 2. scale all lnLs by the max lnL and then convert to normal likelihoods (non log):
         scaledLnls = {} # key = tree ID, value = scaled lnL
         for t in useTheseTrees:
+            #print "dataWharehouse 50:", t
+            #print "dataWharehouse 51:", self.trees[t].lnL
+            #print "dataWharehouse 52:", maxLnl
             scaledLnls[t] = math.exp( self.trees[t].lnL - maxLnl )
         
         # 3. sum the scaled lnLs:

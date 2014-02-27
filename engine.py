@@ -117,7 +117,6 @@ class Engine:
 
         # Before we write any output, verify the output directory
         outputDirectory = self.argParser.getArg("--outputdir")
-        print outputDirectory
         if os.path.exists(outputDirectory) == False:
             os.system("mkdir " + outputDirectory)
 
@@ -176,10 +175,11 @@ class Engine:
                     os.system("rm " + thisExecutionDir + "/reformatted_alignment.phy")
                 # for debugging:
                 #os.system("ls -alh " + outputDirectory)
-                #os.system("ls -alh " + thisExecutionDir)
+                os.system("ls -alh " + thisExecutionDir)
                 #print "\n\n engine 173 \n\n"
                 #print "cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/reformatted_alignment.phy"
                 #os.system("cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/")#reformatted_alignment.phy")
+                
                 os.system("ln -s " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/reformatted_alignment.phy")
                 
                 # build a soft link to the model, in each execution directory:

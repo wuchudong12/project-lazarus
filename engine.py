@@ -130,7 +130,7 @@ class Engine:
                 t = re.sub("J", "?", t)
                 t = re.sub("Z", "?", t)
             cleantokens.append(t)
-        ag = open(outputDirectory + "/reformatted_alignment.phy", "w")
+        ag = open(thisExecutionDir + "/reformatted_alignment.phy", "w")
         ag.write(al.getSeqNames().__len__().__str__() + "  " + al.__len__().__str__() + "\n")
         for t in cleantokens:
             #print "engine 132", t
@@ -171,11 +171,11 @@ class Engine:
                 tg.close()
                 
                 # build a soft link to the alignment (located in the output directory):
-                if os.path.exists(thisExecutionDir + "/reformatted_alignment.phy"):
-                    os.system("rm " + thisExecutionDir + "/reformatted_alignment.phy")
+                #if os.path.exists(thisExecutionDir + "/reformatted_alignment.phy"):
+                #    os.system("rm " + thisExecutionDir + "/reformatted_alignment.phy")
                 # for debugging:
                 #os.system("ls -alh " + outputDirectory)
-                os.system("ls -alh " + thisExecutionDir)
+                #os.system("ls -alh " + thisExecutionDir)
                 #print "\n\n engine 173 \n\n"
                 #print "cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/reformatted_alignment.phy"
                 #os.system("cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/")#reformatted_alignment.phy")

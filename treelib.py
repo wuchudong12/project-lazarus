@@ -301,7 +301,7 @@ class MITTree:
     
     def addTree(self, parent, childTree):
         """Add a subtree to the tree."""
-        
+        "cp "
         # Merge nodes and change the names of childTree names if they conflict
         # with existing names
         self.mergeNames(childTree)        

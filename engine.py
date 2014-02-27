@@ -122,7 +122,6 @@ class Engine:
             os.system("mkdir " + outputDirectory)
 
         # Write the alignment to outputDirectory + "/reformatted_alignment.phy"
-        fastaString = ""
         tokens = al.__str__().split("\n")
         cleantokens = []
         for t in tokens:
@@ -141,7 +140,6 @@ class Engine:
                 ag.write("\n" + t + "   ")
             else:
                 ag.write(t)
-        #ag.write(fastaString + "\n")
         ag.close()
              
         # Write the tree to thisExecutionDir + "/reformatted_tree.tre"   
@@ -174,14 +172,15 @@ class Engine:
                 tg.close()
                 
                 # build a soft link to the alignment (located in the output directory):
-                #if os.path.exists(thisExecutionDir + "/reformatted_alignment.phy"):
-                #    os.system("rm " + thisExecutionDir + "/reformatted_alignment.phy")
+                if os.path.exists(thisExecutionDir + "/reformatted_alignment.phy"):
+                    os.system("rm " + thisExecutionDir + "/reformatted_alignment.phy")
                 # for debugging:
                 #os.system("ls -alh " + outputDirectory)
                 #os.system("ls -alh " + thisExecutionDir)
                 #print "\n\n engine 173 \n\n"
                 #print "cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/reformatted_alignment.phy"
-                os.system("cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/")#reformatted_alignment.phy")
+                #os.system("cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/")#reformatted_alignment.phy")
+                os.system("ln -s " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/reformatted_alignment.phy")
                 
                 # build a soft link to the model, in each execution directory:
                 if useAminoAcids:

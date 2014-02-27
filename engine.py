@@ -177,7 +177,7 @@ class Engine:
                 #os.system("ls -alh " + outputDirectory)
                 #os.system("ls -alh " + thisExecutionDir)
                 #print "\n\n engine 173 \n\n"
-                print "cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/reformatted_alignment.phy"
+                os.system("cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/reformatted_alignment.phy")
                 #os.system("cp " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/")#reformatted_alignment.phy")
                 #os.system("ln -s " + outputDirectory + "/reformatted_alignment.phy " + thisExecutionDir + "/reformatted_alignment.phy")
                 

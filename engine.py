@@ -265,6 +265,7 @@ class Engine:
             x = self.argParser.getArg("--asrv")
             if x == "0":
                 self.pamljobs[treenumber].among_site_rate_variation = False
+                self.fix_asrv = False
             else:
                 self.pamljobs[treenumber].among_site_rate_variation = True
                 self.pamljobs[treenumber].ncat_gamma = float(x)

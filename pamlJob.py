@@ -21,7 +21,7 @@ class PamlJob:
         self.estimate_branch_lengths = False
         self.among_site_rate_variation = False
         self.fix_asrv = False
-        self.alpha = 0.0
+        self.alpha = 1.0
         self.ncat_gamma = 4
         self.cleandata = 0
                         
@@ -102,7 +102,7 @@ class CodemlJob(PamlJob):
         f.write("RateAncestor = 2\n")
         f.write("Small_Diff = 1.0e-6\n")
         f.write("cleandata = " + self.cleandata.__str__() + "\n") # remove sites with "X" or "?" or other ambiguity
-        f.write("method = 0\n")
+        f.write("method = 1\n")
         if self.estimate_branch_lengths == False:
             f.write("fix_blength = 2\n") # fix the branch lengths at their values in the tree file.
         else:
@@ -187,7 +187,8 @@ class BasemlJob(PamlJob):
             f.write("alpha = " + self.alpha.__str__() + "\n")
             f.write("ncatG = 4\n")
         else:
-            f.write("alpha = 1.0\n")
+            f.write("alpha = 0\n")
+        
         f.write("RateAncestor = 2\n")
         f.write("Small_Diff = 1.0e-6\n")
         f.write("cleandata = " + self.cleandata.__str__() + "\n") # remove sites with "X" or "?" or other ambiguity

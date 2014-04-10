@@ -416,6 +416,7 @@ class testEngine:
                 print "The following directory does not exist: " + self.outDir + "/tree" + t.__str__()
                 raise AssertionError
         print "SUCCESS."
+        
         sys.stdout.write("\n. test 1b. . .")
         expectedTreeNodes = { 1:["5", "6", "7"], 2:["5", "6", "7"], 3:["5"] }
         for t in expectedTreeNodes:

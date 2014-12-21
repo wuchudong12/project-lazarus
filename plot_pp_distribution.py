@@ -156,7 +156,7 @@ def Plot_pp_proportions(datpath):
         
     print "\t", int(sum90), "(%.3f%%)"%(sum90 * 1.0 / count_total_sites * 100), "sites have PP >= 0.90 "
     print "\t", int(sum80), "(%.3f%%)"%(sum80 * 1.0 / count_total_sites * 100), "sites have PP >= 0.80 "
-    print "\t", int(sum70), "(%.3f%%)"%(sum70 * 1.0 / count_total_sites * 100), "sites have PP >= 0.80 "
+    print "\t", int(sum70), "(%.3f%%)"%(sum70 * 1.0 / count_total_sites * 100), "sites have PP >= 0.70 "
 
     print "\n\tmean PP = \t\t\t%.3f"%mean(allpps)
     print "\tstandard deviation = \t\t%.3f"%sd(allpps)
@@ -176,7 +176,7 @@ def Plot_pp_proportions(datpath):
             print "\t[%.2f"%(probForBin(i) - 0.025) + ", %.2f)"%(probForBin(i) + 0.025), "\t%.3f"%points[i]
         else:
             print "\t[1.00]\t\t", "%.3f"%points[i]
-    return [ppbins,count_total_sites]
+    return [ppbins,count_total_sites,allpps]
 
 def R_barplot(data):
     xlab = "PP"
@@ -205,7 +205,7 @@ def R_barplot(data):
     
             
     pdfpath = "barplot." + filekeyword + ".pdf"
-    cranstr = "pdf(\"" + pdfpath + "\", width=8, height=4);\n"    
+    cranstr = "pdf(\"" + pdfpath + "\", width=6, height=3);\n"    
     cranstr += "bars <- read.table(\"" + tablepath + "\", header=T, sep=\"\\t\")\n"
     
     #print pointsets
@@ -222,11 +222,45 @@ def R_barplot(data):
     fout = open(cranpath, "w")
     fout.write( cranstr )
     fout.close()
-    
-    os.system("r --no-save < " + cranpath)
+    #os.system("r --no-save < " + cranpath)
 
-[ppbins,count] = Plot_pp_proportions(sys.argv[1])
+
+def R_lineplot(allpps):    
+    cranpath = "anc.seqplot.cran"
+    cranout = open(cranpath, "w")
+    x = "x <- c("
+    y = "y <- c("
+
+    miny = 0.0
+    maxy = 1.0
+    minx = 1
+    maxx = allpps.__len__()
+
+    print allpps
+    print minx
+    print maxx
+
+    for s in range(minx, maxx+1):
+        x += s.__str__() + ","
+        y += allpps[s-1].__str__() + ","
+    x = re.sub(",$", "", x)
+    x += ")"
+    cranout.write( x + "\n")
+    y = re.sub(",$", "", y)
+    y += ")"
+    cranout.write( y + "\n")
+        
+
+    cranout.write("pdf('" + cranpath + ".pdf', width=6, height=3);\n")
+    cranout.write("plot(x,y,xlab='sequence sites',ylab='P of ML state', type='l', lwd=2);\n")
+    cranout.write("dev.off();\n")
+    cranout.close()
+    #os.system("r --no-save < " + cranpath)
+    return cranpath
+
+[ppbins,count,allpps] = Plot_pp_proportions(sys.argv[1])
 pp_p = {}
 for pp in ppbins:
     pp_p[pp] = float(ppbins[pp].__len__())/count
 R_barplot(pp_p)
+R_lineplot(allpps)

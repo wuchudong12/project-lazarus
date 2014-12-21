@@ -420,6 +420,7 @@ class Engine:
                     line = re.sub("\s\d+\_", " ", line)
                     # 3. ",XX_"
                     line = re.sub("\,\d+\_", ", ", line)
+                    #print "\n. 423: Importing cladogram", line
                     self.data.trees[currentTreeNumber].treeviewString = line
                     
                 if None != re.match("^Prob distribution at node", line) and currentTreeNumber != None:
@@ -519,29 +520,102 @@ class Engine:
         else:
             self.logger.throwError("The argument --gapcorrect requires the argument --outgroup")
         
-        # load the tree as an MIT Tree object (see treelib.py):       
-        tree = MITTree()
-        f = open(outputDirectory + "/laztree.tre", "w")
-        f.write(self.data.trees[t].treeviewString + "\n")
-        f.close()
-        tree.readNewick( outputDirectory + "/laztree.tre")
-        outgroup_nodes = []
-        for o in outgroup:
-            outgroup_nodes.append( tree.nodes[ o ] )
+#         # load the tree as an MIT Tree object (see treelib.py):       
+#         f = open(outputDirectory + "/laztree.tre", "w")
+#         f.write(self.data.trees[t].treeviewString + "\n")
+#         f.close()
+#         tree = MITTree()
+#         tree.readNewick( outputDirectory + "/laztree.tre")
+#         outgroup_nodes = []
+#         for o in outgroup:
+#             outgroup_nodes.append( tree.nodes[ o ] )
+# 
+#         print "\n. 533:", self.data.trees[t].treeviewString
+#         # re-root the tree according to the outgroup
+#         # This introduces a *new* node with an unknown name.
+#         outgroup_root = lca(outgroup_nodes)         # using treelib.py
+#         r = reroot(tree, outgroup_root.name, onBranch=True)         # using treelib.py    
         
-        # re-root the tree according to the outgroup
-        # This introduces a *new* node with an unknown name.
-        outgroup_root = lca(outgroup_nodes)         # using treelib.py
-        r = reroot(tree, outgroup_root.name, onBranch=True)         # using treelib.py    
-        # save the rerooted tree
-        self.data.trees[t].treeviewString = r.getOnelineNewick()
+        # This is the problem line:
+        #self.data.trees[t].treeviewString = r.getOnelineNewick()
+        
+        #
+        # Tangent, to reroot the tree using dendropy
+        # 
+        
+        
+        #
+        # December 2014: new way:
+        #
+#         import dendropy
+#         dtree = dendropy.Tree.get_from_string(self.data.trees[t].treeviewString,"newick")
+#         dtree.update_splits(delete_outdegree_one=False)
+#         
+#         """Root the tree, temporarily, at a terminal node."""
+#         dtree.reroot_at_midpoint(update_splits=True, delete_outdegree_one=True)
+#         
+#         """And now re-root at the outgroup mrca"""
+#         mrca = dtree.mrca(taxon_labels=outgroup)
+#         candidate_edges = []
+#         for edge in dtree.postorder_edge_iter():
+#             if edge.tail_node == mrca or edge.head_node == mrca:
+#                 candidate_edges.append( edge )           
+#         dtree.reroot_at_edge(mrca.edge, update_splits=False, delete_outdegree_one=True)
+
+
+        #
+        # old way:
+        #
+        import dendropy
+        #print "546:", self.data.trees[t].treeviewString
+        dtree = dendropy.Tree.get_from_string(self.data.trees[t].treeviewString,"newick")
+        dtree.update_splits(delete_outdegree_one=True)
+        #print "572:", dtree.as_string('newick')
+        
+        #print "573:", outgroup
+        #outgroup = ['DEHA2A04378g', 'PGUG00211.1','CTRG04502.3']
+#         not_outgroup = []
+#         for n in dtree.nodes():
+#             print n.taxon
+#             if n.taxon not in outgroup and n.taxon != None:
+#                 not_outgroup.append( n.taxon )
+#         not_out_mrca = dtree.mrca(taxon_labels = not_outgroup)
+
+        #dtree.reroot_at_node(new_root_node=not_out_mrca)
+        
+        mrca = dtree.mrca(taxon_labels=outgroup)
+        
+        #dtree.update_splits(delete_outdegree_one=False)
+        #dtree.reroot_at_midpoint(update_splits=False, delete_outdegree_one=False)
+
+        #print "579:", dtree.__str__()
+        
+        dtree.reroot_at_node(mrca, update_splits=True)
+        #dtree.reroot_at_edge(mrca.edge, update_splits=True)
+        
+        
+        #print "577", dtree.__str__()
+        
+        dtree_newick = dtree.as_string('newick')
+        #print "551:", dtree_newick
+        self.data.trees[t].treeviewString = dtree_newick
+        
+        #
+        # end tangent
+        # 
+        
+        #print "\n. 547:", self.data.trees[t].treeviewString
         # load the rerooted tree as a PyCogent Tree object:
         self.data.trees[t].temporary_tree_object = LoadTree(treestring = self.data.trees[t].treeviewString)
-        
+    
+        #
+        # continue here
+        #
+
         # recursively place gaps
         al = self.getAlignmentObject()
         for s in range(0, al.__len__() ):
-            print "Placing gaps for column ", s+1, " of ", al.__len__()
+            print "\n. Placing gaps for column ", s+1, " of ", al.__len__()
             self.postorder_traversal(t, self.data.trees[t].temporary_tree_object.Name, al[s], s + 1) # s ranges from [0,...], but column numbers range from [1,...]
             self.preorder_traversal(t, self.data.trees[t].temporary_tree_object.Name, al[s], s + 1)
         
@@ -597,6 +671,9 @@ class Engine:
     def preorder_traversal(self, tree_number, node_name, column, column_number):
         """a helper function for places_ancestral_gaps"""
         
+        #print "602:", self.data.trees[tree_number].temporary_tree_object.getNodeMatchingName(node_name)
+        #print "603:", self.data.trees[tree_number].temporary_tree_object.getNodeMatchingName(node_name).isTip()
+        
         #print "preorder_traversal, node_name=", node_name, " column_number=", column_number
         n = None
         # 1. is this node the root of the entire tree? 
@@ -620,10 +697,13 @@ class Engine:
                         mlstate = self.data.trees[tree_number].nodes[node_name.__str__()].sites[column_number].find_ML_state()
                         #print "mlstatepp = self.data.trees[",tree_number,"].nodes[",node_name.__str__(),"].sites[",column_number,"].stateProbs[",mlstate,"]"
                         mlstatepp = self.data.trees[tree_number].nodes[node_name.__str__()].sites[column_number].stateProbs[mlstate]
+                        #print "623:", node_name
                         self.data.trees[tree_number].nodes[node_name.__str__()].sites[column_number].stateProbs[mlstate.swapcase()] = mlstatepp
                 elif self.data.trees[tree_number].temporary_states[n.Parent.Name] == 0.5 and self.data.trees[tree_number].temporary_states[n.Name] == 0:
+                    #print "626:", node_name
                     self.data.trees[tree_number].nodes[node_name.__str__()].sites[column_number].stateProbs["-"] = 100.0
                 elif self.data.trees[tree_number].temporary_states[n.Parent.Name] == 0 and self.data.trees[tree_number].temporary_states[n.Name] == 0.5:
+                    #print "629:", node_name, column_number
                     self.data.trees[tree_number].nodes[node_name.__str__()].sites[column_number].stateProbs["-"] = 100.0
                     self.data.trees[tree_number].temporary_states[n.Name] == 0
         

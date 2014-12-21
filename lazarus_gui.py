@@ -412,4 +412,5 @@ while choice != "X":
     crossCheckAlignmentTrees()
     crossCheckOutgroupAlignment()
     
+    workspace.save
     

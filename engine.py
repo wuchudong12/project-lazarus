@@ -587,15 +587,7 @@ class Engine:
         
         """New for March 2015:"""
         if outgroup.__len__() == 1:
-            print "590", outgroup, dtree
-            """Some old versions of Dendropy don't allow rerooting at a leaf,
-                so we need to ensure that we're actually dealing with an internal node."""
-            for ln in dtree.leaf_nodes():
-                print "594 leaf label:", ln
-                if ln.label == outgroup[0]:
-                    mrca = ln.parent_node
-                    print "595:", mrca.label
-                    break
+            mrca = mrca.parent_node
         
         #dtree.update_splits(delete_outdegree_one=False)
         #dtree.reroot_at_midpoint(update_splits=False, delete_outdegree_one=False)

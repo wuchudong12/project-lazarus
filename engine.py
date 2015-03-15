@@ -591,7 +591,7 @@ class Engine:
             """Some old versions of Dendropy don't allow rerooting at a leaf,
                 so we need to ensure that we're actually dealing with an internal node."""
             for ln in dtree.leaf_nodes():
-                print "594 leaf label:", ln.label
+                print "594 leaf label:", ln.name, ln
                 if ln.label == outgroup[0]:
                     mrca = ln.parent_node
                     print "595:", mrca.label

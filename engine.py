@@ -592,6 +592,7 @@ class Engine:
             for ln in dtree.leaf_nodes():
                 if ln.label == outgroup[0]:
                     mrca = ln.parent_node
+                    print "595:", mrca.label
                     break
         
         #dtree.update_splits(delete_outdegree_one=False)

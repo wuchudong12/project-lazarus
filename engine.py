@@ -587,7 +587,7 @@ class Engine:
         
         """New for March 2015:"""
         if outgroup.__len__() == 1:
-            print "590", outgroup
+            print "590", outgroup, dtree
             """Some old versions of Dendropy don't allow rerooting at a leaf,
                 so we need to ensure that we're actually dealing with an internal node."""
             for ln in dtree.leaf_nodes():
